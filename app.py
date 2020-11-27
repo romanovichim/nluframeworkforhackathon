@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory
 import os
+from carrydialog import girl_answer
 
 UPLOAD_FOLDER = os.path.basename('music')
 
@@ -15,12 +16,22 @@ def main():
 def children():
     return render_template("children.html")
 
+@app.route("/carry")
+def carry():
+    img = './static/carry.jpg'
+    return render_template("carry.html", img=img)
 
 @app.route("/get")
 def get_bot_response():
     userText = request.args.get('msg')
     #return str(english_bot.get_response(userText))
     return str(userText)
+
+@app.route("/getcarry")
+def get_carry_response():
+    userText = request.args.get('msg')
+    #return str(english_bot.get_response(userText))
+    return girl_answer(userText)
 
 @app.route('/music/<path:filename>')
 def download_file(filename):

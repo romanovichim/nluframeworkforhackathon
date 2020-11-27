@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!--
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+	-->
+	<style>
+	body {
+    font-family: Garamond;
+	}
+
+	h1 {
+		color: black;
+		margin-bottom: 0;
+		margin-top: 0;
+		text-align: center;
+		font-size: 40px;
+	}
+
+	h3 {
+		color: black;
+		font-size: 20px;
+		margin-top: 3px;
+		text-align: center;
+	}
+
+	#chatbox {
+		margin-left: auto;
+		margin-right: auto;
+		width: 40%;
+		margin-top: 60px;
+	}
+
+	#userInput {
+		margin-left: auto;
+		margin-right: auto;
+		width: 40%;
+		margin-top: 60px;
+	}
+
+	#textInput {
+		width: 87%;
+		border: none;
+		border-bottom: 3px solid #009688;
+		font-family: monospace;
+		font-size: 17px;
+	}
+
+	#buttonInput {
+		padding: 3px;
+		font-family: monospace;
+		font-size: 17px;
+	}
+
+	.userText {
+		color: white;
+		font-family: monospace;
+		font-size: 17px;
+		text-align: right;
+		line-height: 30px;
+	}
+
+	.userText span {
+		background-color: #009688;
+		padding: 10px;
+		border-radius: 2px;
+	}
+
+	.botText {
+		color: white;
+		font-family: monospace;
+		font-size: 17px;
+		text-align: left;
+		line-height: 30px;
+	}
+
+	.botText span {
+		background-color: #506def;
+		padding: 10px;
+		border-radius: 2px;
+	}
+
+	#tidbit {
+		position:absolute;
+		bottom:0;
+		right:0;
+		width: 300px;
+	}
+	
+
+	</style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	  <!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+  </head>
+  <body>
+  <header>
+  <div class="collapse bg-dark" id="navbarHeader">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-md-7 py-4">
+          <h4 class="text-white">About</h4>
+          <p class="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+        </div>
+        <div class="col-sm-4 offset-md-1 py-4">
+          <h4 class="text-white">Contact</h4>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white">Follow on Twitter</a></li>
+            <li><a href="#" class="text-white">Like on Facebook</a></li>
+            <li><a href="#" class="text-white">Email me</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container d-flex justify-content-between">
+      <a href="{{ url_for('main') }}" class="navbar-brand d-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="mr-2" viewBox="0 0 24 24" focusable="false"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <strong>Centurion</strong>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </div>
+</header>
+  <div class="container">
+	    <!-- Three columns of text below the carousel -->
+    <div class="row justify-content-md-center">
+      <div class="col-lg-4" align="center">
+		<br>
+		<div id="images">
+        <img src="{{ img }}" width="140" height="140">
+		</div>
+        <h2>Carry Bradshow</h2>
+        <p>Writer in New York. Likes to discuss feelings.</p>
+      </div><!-- /.col-lg-4 -->
+    </div><!-- /.row -->
+  
+  </div>
+ 
+ 
+ 
+    <div>
+      <div id="chatbox">
+        <p class="botText"><span>"Hello.  How are you feeling today?"</span></p>
+      </div>
+      <div id="userInput">
+        <input id="textInput" type="text" name="msg" placeholder="Message">
+        <input id="buttonInput" type="submit" value="Send" class="btn btn-secondary">
+      </div>
+      <script>
+        function getBotResponse() {
+          var rawText = $("#textInput").val();
+          var userHtml = '<p class="userText"><span>' + rawText + '</span></p>';
+          $("#textInput").val("");
+          $("#chatbox").append(userHtml);
+          document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          $.get("/getcarry", { msg: rawText }).done(function(data) {
+            var botHtml = '<p class="botText"><span>' + data + '</span></p>';
+            $("#chatbox").append(botHtml);
+            document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          });
+        }
+        $("#textInput").keypress(function(e) {
+            if ((e.which == 13) && document.getElementById("textInput").value != "" ){
+                getBotResponse();
+            }
+        });
+        $("#buttonInput").click(function() {
+            if (document.getElementById("textInput").value != "") {
+                getBotResponse();
+            }
+        })
+      </script>
+    </div>
+  </body>
+</html>
