@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from carryutil import Chat, reflections
-
+import re
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,
 # with group-macros labelled as %1, %2.
@@ -307,8 +307,23 @@ pairs = (
 carry_chatbot = Chat(pairs, reflections)
 
 
+#the most common adjectives
+syn_list =[['new','up-to-date','current'],['good','fine','superior'],['high','lofty','giant'],['old','aged','senior'],['cold','chilly','icy'],['small','tiny','compact'],['interesting','engaging','fascinating'],['beautiful'],['bad','second-class','poor']]
+
+def syn(string):
+    res = ""
+    wordlist = re.sub("[^\w]", " ",  string).split()
+    for synstr in syn_list:
+        for syn in synstr:    
+            for word in wordlist:
+                if(syn == word):
+                    res =  "By the way you can say "+ word + " as " + synstr[1] + " " + synstr[2]
+        
+    return res
+
 def girl_answer(string):
-    return carry_chatbot.respond(string)
+    res = carry_chatbot.respond(string) + syn(string)
+    return res
 
 #print(eliza_chat())
 
